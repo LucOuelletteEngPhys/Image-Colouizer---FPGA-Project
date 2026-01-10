@@ -2,7 +2,7 @@
 FPGA-based image colourizer with SystemVerilog RTL and UART streaming
 
 ## Overview
-Multi-module FPGA-based image colourizer that reads grayscale image data 
+Multi-module FPGA-based image colourizer that reads grayscale image data from
 BRAM, computes weighted RGB colour components from user input, and streams 
 pixel data to host over UART.
 
