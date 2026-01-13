@@ -1,10 +1,14 @@
 `timescale 1ns / 1ps
+
 module colorizer_top (
     input logic i_sys_clk,
     input logic i_rst,
-    input logic i_uart_rx_in,
+
+    // UART pins
+    input  logic i_uart_rx_in,
     output logic o_uart_tx_out
 );
+
     logic tick_16x;
     logic transmit;
     logic clk;
@@ -19,13 +23,14 @@ module colorizer_top (
     logic i_transmit;
     logic [23:0] passed;
     logic done;
-
+    
+    // Clock generator module
     clk_wiz_0 clock_gen (
         .clk_in1 (i_sys_clk),
-        .reset (i_rst),
+        .reset   (i_rst),
         .clk_out1(clk)
     );
-
+    
     baud_gen u_baud (
         .i_clk(clk),
         .i_rst(i_rst),
@@ -40,7 +45,7 @@ module colorizer_top (
         .o_data(output_data),
         .o_strobe(o_strobe)
     );
-
+    
     uart_transmitter transmitter (
         .i_clk(clk),
         .i_rst(i_rst),
@@ -50,14 +55,14 @@ module colorizer_top (
         .i_data(input_data),
         .o_busy(o_busy)
     );
-
+    
     memory_bram bram(
-        .i_clk(clk),
+        .i_clk(clk), 
         .i_rst(i_rst),
         .i_addr(i_addr),
         .o_data(B_o_data)
     );
-
+    
     Command_encoder enc(
         .clk(clk),
         .rst(i_rst),
@@ -66,7 +71,7 @@ module colorizer_top (
         .passed(passed),
         .done(done)
     );
-
+    
     Pixel_Colourizer col(
         .clk(clk),
         .rst(i_rst),
@@ -79,4 +84,22 @@ module colorizer_top (
         .i_data(i_data)
     );
     
+    ila_0 ila (
+        .clk(clk),
+        .probe0(passed),
+        .probe1(done),
+        .probe2(i_rst),
+        .probe3(tick_16x),
+        .probe4(transmit),
+        .probe5(busy),
+        .probe6(output_data),
+        .probe7(input_data),
+        .probe8(B_o_data),
+        .probe9(i_data),
+        .probe10(o_strobe),
+        .probe11(o_busy),
+        .probe12(i_addr),
+        .probe13(i_transmit)  
+    );
+
 endmodule
